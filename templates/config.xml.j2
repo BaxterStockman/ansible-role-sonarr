@@ -1,0 +1,8 @@
+#jinja2: lstrip_blocks: True
+{{ ansible_managed | comment('xml') }}
+<Config>
+{% for setting, value in sonarr_settings | dictsort -%}
+    {% set xml_key = setting.split('_') | map('capitalize') | join('') | escape %}
+<{{ xml_key }}>{{ value }}</{{ xml_key }}>
+{% endfor %}
+</Config>

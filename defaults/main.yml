@@ -1,0 +1,6 @@
+---
+# defaults file for ansible-role-sonarr
+
+sonarr_settings: {}
+sonarr_data_dir: /var/data/sonarr
+sonarr_config_file: '{{ sonarr_data_dir }}/config.xml'

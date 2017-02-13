@@ -1,0 +1,48 @@
+---
+# tasks file for ansible-role-sonarr
+- fail:
+    msg: 'This role is designed for systems using systemd'
+  # Default to systemd, in case fact gathering is off.
+  when: (ansible_service_mgr | default('systemd') != 'systemd'
+
+- name: main | create supplementary groups
+  group:
+    name: '{{ sonarr_systemd_supplementary_group }}'
+  loop_control:
+    loop_var: sonarr_systemd_supplementary_group
+  with_items: '{{ sonarr_systemd_supplementary_groups }}'
+
+- name: main | create custom systemd configuration directory
+  file:
+    path: '{{ sonarr_systemd_custom_config | dirname }}'
+    state: directory
+
+- name: main | template custom systemd configuration
+  template:
+    src: sonarr.service.j2
+    dest: '{{ sonarr_systemd_custom_config }}'
+
+- name: main | create sonarr user
+  user:
+    name: sonarr
+    group: sonarr
+    shell: '/sbin/nologin'
+    state: present
+
+- name: main | create data dir and config file parent dir
+  file:
+    path: '{{ sonarr_dir }}'
+    state: directory
+    owner: sonarr
+    group: sonarr
+  loop_control:
+    loop_var: sonarr_dir
+  with_items:
+    - '{{ sonarr_data_dir }}'
+    - '{{ sonarr_config_file | dirname }}'
+
+- name: main | template sonarr configuration file
+  template:
+    dest: '{{ sonarr_config_file }}'
+    src: config.xml.j2
+  when: (sonarr_settings | length) > 0

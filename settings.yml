@@ -1,0 +1,4 @@
+sonarr_settings:
+    foo: bar
+    baz: 'quux >> yaz'
+    this_is_a_setting: "y'all"

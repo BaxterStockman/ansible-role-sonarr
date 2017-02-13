@@ -1,0 +1,3 @@
+---
+# vars file for ansible-role-sonarr
+sonarr_systemd_custom_config: /etc/systemd/system/sonarr.service.d/custom.conf
